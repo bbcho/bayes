@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Bayesian Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="bayesian_files/libs/clipboard/clipboard.min.js"></script>
+<script src="bayesian_files/libs/quarto-html/quarto.js"></script>
+<script src="bayesian_files/libs/quarto-html/popper.min.js"></script>
+<script src="bayesian_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="bayesian_files/libs/quarto-html/anchor.min.js"></script>
+<link href="bayesian_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="bayesian_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="bayesian_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="bayesian_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="bayesian_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bayesian Inference</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>You can add options to executable code like this</p>
+<pre class="{r}"><code>#| echo: false
+2 * 2</code></pre>
+<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
+<section id="bayesian-inference" class="level1">
+<h1>Bayesian Inference</h1>
+<section id="statistical-inference" class="level2">
+<h2 class="anchored" data-anchor-id="statistical-inference">Statistical Inference</h2>
+<p>Statistical inference is the process in which we make inferences (estimates) about a population or problem space when we only have a sub-sample of the total probable outcomes. In the vast majority of cases, we can never collect data for the entire population of the problem space but instead can only sample a subset.</p>
+<p>For example, some classic problems would be estimating the average height of everyone on earth when we only have the heights of 200 people or determining what is the probability of loan defaults for all potential loan customers given that I have 200 customers and 2 have defaulted in the last year.</p>
+<p>There are broadly two main approaches to making estimates about a population given data from a sub-sample from the population, a frequentist approach and a Bayesian approach.</p>
+</section>
+<section id="frequestist-approach" class="level2">
+<h2 class="anchored" data-anchor-id="frequestist-approach">Frequestist Approach</h2>
+<p>First lets define frequentist statistics. A frequentist approach to statistics would be concerned about calculating the long-run probability of an outcome or event. This is the method that you were taught in school involving a lot of math, probabilities and p-values. The implicit assumption that we’re making with this approach is that we have some ability to determine the long-run probability of an outcome. For example the long-run probability of getting heads on a coin toss would be 0.5 based on what we know about the mechanics of a coin toss. However, what if thought that the coin might not be a “fair” coin? How would we arrive at the probability of heads then if we had data on tosses of that coin?</p>
+<p>A frequentist approach to solving this problem (also called frequentist inference) would be to create a hypothesis and test it.</p>
+<p>https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=&amp;ved=2ahUKEwjRpbe58qH3AhWCM30KHaWkDREQFnoECBsQAw&amp;url=https%3A%2F%2Fvault.hanover.edu%2F~altermattw%2Fcourses%2F220%2Freadings%2FStatistical_Inference.pdf&amp;usg=AOvVaw1htPlxgll-9LxipNreRcQQ</p>
+<div class="cell" data-execution_count="2">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of heads in sample:  61</code></pre>
+</div>
+</div>
+<p>h0: p = 0.5 # the null hypothesis that the coin is fair…</p>
+<p>h1: p &gt; 0.5 # the alternative hypothesis</p>
+<p>The goal here is to accept or reject the null hypothesis by determining the odds of getting your result under th null hypothesis that the coin is fair.</p>
+<p>Let’s assume that the total population of coin flips ever is 10,000,000. then what is the probabality of getting the result above from that total population?</p>
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-stdout">
+<pre><code>Flip 100 coins, 10000 times...</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>array([44, 46, 49, 48, 52, 42, 46, 59, 54, 56, 45, 49, 50, 54, 47, 41, 59,
+       43, 45, 52])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-stdout">
+<pre><code>probability of getting 61 heads or more:  1.75 %</code></pre>
+</div>
+</div>
+<p>Then, because the odds of getting 61 heads on a fair coin is only 1.99%, I would reject the null hypothesis h0, that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis.</p>
+</section>
+<section id="issue-1-just-because-the-result-is-unlikely-doesnt-make-it-impossible" class="level2">
+<h2 class="anchored" data-anchor-id="issue-1-just-because-the-result-is-unlikely-doesnt-make-it-impossible">Issue #1: Just because the result is unlikely, doesn’t make it impossible</h2>
+<div class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of heads in sample:  57
+probability of getting 57 heads or more:  9.94 %</code></pre>
+</div>
+</div>
+<p>Even though we generated this sample using the same probability of heads of 0.6 as before, now we can’t reject the null hypothesis!</p>
+</section>
+<section id="issue-2-picking-the-right-hypothesises-is-hard" class="level2">
+<h2 class="anchored" data-anchor-id="issue-2-picking-the-right-hypothesises-is-hard">Issue #2: Picking the right hypothesises is hard</h2>
+<p>In the example above, just because we’ve rejected the null hypothesis, it doesn’t make the alternative hypothesis automatically correct! For example p &lt; 0.5. While this is a simple example with only 3 possible outcomes for p, there are many real life examples where there are many possible explainations aside from the null hypothesis.</p>
+<div class="cell" data-execution_count="6">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of heads in sample:  42
+probability of getting 42 heads or more:  95.39 %
+2.5th Percentile = 40.0 heads 97.5th Percentile = 60.0 heads</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-7-output-2.png" width="583" height="411"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-stdout">
+<pre><code>probability of getting 42 heads or more:  95.39 %
+probability of getting 42 heads or more:  7.01 %</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="cell-output cell-output-stdout">
+<pre><code>probability of getting 5 heads or more:  100.0 %</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of heads in sample:  47</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>array([48, 39, 51, 60, 53, 53, 36, 49, 48, 42, 52, 53, 56, 45, 44, 52, 45,
+       52, 46, 52, 52, 52, 48, 58, 51, 54, 48, 39, 53, 54, 49, 50, 54, 46,
+       55, 54, 47, 53, 44, 46, 49, 45, 49, 48, 53, 49, 50, 50, 49, 55, 49,
+       49, 61, 47, 50, 52, 48, 53, 40, 48, 49, 53, 42, 49, 54, 56, 50, 49,
+       46, 60, 52, 52, 56, 49, 51, 46, 43, 48, 43, 41, 51, 49, 52, 53, 42,
+       45, 46, 53, 56, 52, 51, 47, 42, 47, 52, 47, 50, 49, 52, 47, 43, 54,
+       52, 46, 49, 53, 42, 50, 53, 60, 59, 41, 49, 51, 48, 50, 44, 46, 60,
+       51, 48, 46, 44, 50, 48, 51, 52, 51, 44, 48, 51, 53, 53, 41, 46, 47,
+       39, 41, 52, 48, 53, 51, 52, 45, 51, 50, 48, 54, 49, 42, 49, 50, 47,
+       52, 52, 48, 49, 49, 51, 45, 52, 48, 46, 56, 49, 44, 47, 56, 56, 41,
+       46, 57, 53, 52, 56, 46, 54, 50, 57, 47, 48, 47, 47, 50, 47, 50, 54,
+       49, 47, 56, 54, 45, 56, 57, 44, 46, 41, 46, 50, 49])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="cell-output cell-output-stdout">
+<pre><code>probability of getting 47 heads or more:  73.8 %</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>0.0107421875</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>(array([  2.,  22.,  59., 179., 223., 247., 192.,  55.,  18.,   3.]),
+ array([33. , 36.3, 39.6, 42.9, 46.2, 49.5, 52.8, 56.1, 59.4, 62.7, 66. ]),
+ &lt;BarContainer object of 10 artists&gt;)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-17-output-2.png" width="575" height="411"></p>
+</div>
+</div>
+</section>
+<section id="issues" class="level2">
+<h2 class="anchored" data-anchor-id="issues">Issues</h2>
+<ol type="1">
+<li>It does not tell you what the most likely answer is…</li>
+<li>It does not tell you if p=0.5 is wrong, just unlikely. You can still get 9 heads with p=0.5. This is your false positive rate.</li>
+</ol>
+<p>Note that what we’ve done above is not the true way to calculate the p-value as most statistical methods use formulas to calculate it vs simulations.</p>
+</section>
+<section id="bayesian-approach" class="level2">
+<h2 class="anchored" data-anchor-id="bayesian-approach">Bayesian Approach</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figure class="figure">
+<img src="https://www.statisticshowto.com/wp-content/uploads/2016/04/frequentists_vs_bayesians.png" title="https://xkcd.com/1132/" class="img-fluid figure-img">
+</figure>
+<p></p><figcaption class="figure-caption">https://xkcd.com/1132/</figcaption><p></p>
+</figure>
+</div>
+<p>https://www.sciencedirect.com/topics/neuroscience/statistical-inference</p>
+<p>https://en.wikipedia.org/wiki/Frequentist_inference</p>
+<p>https://www.redjournal.org/article/S0360-3016(21)03256-9/fulltext</p>
+<p>https://corporatefinanceinstitute.com/resources/knowledge/other/hypothesis-testing/</p>
+<p>http://sellsidehandbook.com/2018/12/09/statistical-inference-and-hypothesis-testing/</p>
+<p>https://www.statisticshowto.com/frequentist-statistics/</p>
+<p>Bayesian inference and bayesian statistics in general is named after the statistician Thomas Bayes.</p>
+<p>In contrast to the Frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating the scientific method into the analytical process.</p>
+<div class="cell" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>array([1, 0, 1, 1, 1, 0, 1, 1, 1, 1])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>0.8</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>Text(0, 0.5, 'Estimation of P')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-21-output-2.png" width="1556" height="434"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>Text(0, 0.5, 'Estimation of P')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-22-output-2.png" width="1556" height="429"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-23-output-1.png" width="571" height="411"></p>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
