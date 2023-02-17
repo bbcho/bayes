@@ -3,6 +3,7 @@ title: "Bayesian Inference"
 execute:
   echo: false
 jupyter: python3
+# engine: knitr
 # note to use virtual env for python, you need to create a Rproj in the same
 # directory as the env folder
 ---
@@ -23,29 +24,27 @@ You can add options to executable code like this
 
 The `echo: false` option disables the printing of code (only output is displayed).
 
-
-# Bayesian Inference
-
 ## Statistical Inference
 
 Statistical inference is the process in which we make inferences (estimates) about a population or problem space when we only have a sub-sample of the total probable outcomes. In the vast majority of cases, we can never collect data for the entire population of the problem space but instead can only sample a subset.
 
-For example, some classic problems would be estimating the average height of everyone on earth when we only have the heights of 200 people or determining what is the probability of loan defaults for all potential loan customers given that I have 200 customers and 2 have defaulted in the last year.
+For example, some classic problems would be estimating the average height of everyone on earth when we only have the heights of 200 people or determining what is the probability of loan defaults for all potential loan customers given that I have 200 customers and 2 have defaulted in the last year. Another example closer to home would be using the daily returns of a stock or futures contract form the last 2 years (our sample) to estimate the population of ALL possible daily returns - most likely used to model the returns of the stock on contract going forward in time.
 
 There are broadly two main approaches to making estimates about a population given data from a sub-sample from the population, a frequentist approach and a Bayesian approach.
 
 ## Frequestist Approach
 
-First lets define frequentist statistics. A frequentist approach to statistics would be concerned about calculating the long-run probability of an outcome or event. This is the method that you were taught in school involving a lot of math, probabilities and p-values. The implicit assumption that we're making with this approach is that we have some ability to determine the long-run probability of an outcome. For example the long-run probability of getting heads on a coin toss would be 0.5 based on what we know about the mechanics of a coin toss. However, what if thought that the coin might not be a "fair" coin? How would we arrive at the probability of heads then if we had data on tosses of that coin?
+First lets define frequentist statistics. A frequentist approach to statistics is concerned with calculating the long-run probability of an outcome or event. This is the method that you were taught in school involving a lot of math, probabilities and p-values. The implicit assumption that we're making with this approach is that we have some ability to determine the long-run probability of an outcome. For example the long-run probability of getting heads on a coin toss would be 0.5 based on what we know about the mechanics of a coin toss. However, what if thought that the coin might not be a "fair" coin? How would we arrive at the probability of heads then if we had data on tosses of that coin?
 
 A frequentist approach to solving this problem (also called frequentist inference) would be to create a hypothesis and test it.
 
 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjRpbe58qH3AhWCM30KHaWkDREQFnoECBsQAw&url=https%3A%2F%2Fvault.hanover.edu%2F~altermattw%2Fcourses%2F220%2Freadings%2FStatistical_Inference.pdf&usg=AOvVaw1htPlxgll-9LxipNreRcQQ
 
+First we're going to generate a sequence of 100 coin tosses using an unfair coin.
+
 ```{python}
-p = 0.6 # this is unknown
+p = 0.6 # probability of heads on an unfair coin - this is unknown
 ntoss = 100
-nsamples = 10000
 
 rng = np.random.RandomState(13) #15 for 40
 data = rng.binomial(n=1, size=ntoss, p=p)
@@ -53,34 +52,44 @@ heads = data.sum()
 print("Number of heads in sample: ", heads)
 ```
 
+Next we have to create a null hypothesis which in our case is that the coin is a fair coin toss. The alternative hypothesis is that the probablity of heads is greater than 50% and thus unfair.
 
 h0: p = 0.5 # the null hypothesis that the coin is fair...
 
 h1: p > 0.5 # the alternative hypothesis 
 
-The goal here is to accept or reject the null hypothesis by determining the odds of getting your result under th null hypothesis that the coin is fair.
+The goal here is to accept or reject the null hypothesis by determining the odds of getting your result under the null hypothesis that the coin is fair.
 
-Let's assume that the total population of coin flips ever is 10,000,000. then what is the probabality of getting the result above from that total population?
+Frequentist inference asks the question, what would be the likelihood of getting 61 heads on 100 coin tosses if the coin was fair? To do this, we'll do the 100 tosses of the fair coin, 10,000 times to see how often we get 61 or more heads out of a hundred.
 
 
 ```{python}
-pop = np.random.binomial(n=1, size=10000000, p=0.5)
+nsamples = 10000
 
-print(f"Flip {ntoss} coins, {nsamples} times...")
-sample = np.random.choice(pop, size=(ntoss,nsamples))
+print(f"Flip {ntoss} coins, {nsamples} times...\n")
+
+pop = rng.binomial(n=1, size=ntoss*nsamples, p=0.5)
+sample = rng.choice(pop, size=(ntoss,nsamples))
 
 cnt = sample.sum(axis=0)
-cnt[:20]
+
+print("Number of heads for each sample of 100 tosses (first 20 samples):\n")
+print(cnt[:20])
 ```
 
+Now let's determine how many times we got 61 heads or more...
 
 ```{python}
 print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
 ```
 
-Then, because the odds of getting 61 heads on a fair coin is only 1.99%, I would reject the null hypothesis h0, that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis.
+Then, because the odds of getting 61 heads or more on a fair coin is only 1.83%, I would reject the null hypothesis h0 that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis. Note that most statisticians reject the null hypothesis if the p-value is less than 5%. We also call the p-value you false-positive rate - if the coin was fair it would only show 61 heads (and that the coin was unfair) 1.83% of the time, causing you to reject the null hypothesis.
+
+However, there are a number of issues with using this approach.
 
 ## Issue #1: Just because the result is unlikely, doesn't make it impossible
+
+Remember, even with the fair coin, we still got 61 or more heads 1.83% of the time. Also, even an unfair coin can sometimes produce results that would be indicative of a fair coin... 
 
 ```{python}
 rng = np.random.RandomState(12) #15 for 40
@@ -95,7 +104,13 @@ Even though we generated this sample using the same probability of heads of 0.6 
 
 ## Issue #2: Picking the right hypothesises is hard
 
-In the example above, just because we've rejected the null hypothesis, it doesn't make the alternative hypothesis automatically correct! For example p < 0.5. While this is a simple example with only 3 possible outcomes for p, there are many real life examples where there are many possible explanations aside from the null hypothesis.
+In the example above, just because we've rejected the null hypothesis, it doesn't actually tell us what the true value of `p` is! For example another alternative hypothesis could be `p < 0.5`. While this is a simple example with only 3 possible outcomes for p, there are many real life examples where there are many possible explanations aside from the null hypothesis.
+
+h0: p = 0.5
+
+h1: p > 0.5
+
+h2: p < 0.5
 
 ```{python}
 p = 0.4 # this is unknown
@@ -107,17 +122,34 @@ print("Number of heads in sample: ", heads)
 
 print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
 
-plt.hist(sample.mean(axis=0));
+plt.hist(sample.mean(axis=0))
 print(
     "2.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 2.5)) + " heads", 
     "97.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 97.5)) + " heads"
     )
 ```
 
+In this case, without knowing the answer which alternative hypothesis would you use? Also it's bad practice just keep on testing various hypothesizes. This is because even with a result that shows a p-value of < 5%, this still means that you could randomly get a false-positive. The chance of getting a false-positive with a p-value of 5% on 20 tests is 100%! i.e. random chance alone will give you a false-positive if you just run enough tests...
+
+
+```{python}
+p = 0.5
+rng = np.random.RandomState(10)
+
+
+for i in range(0,20):
+    data = rng.binomial(n=1, size=ntoss, p=p)
+    heads = data.sum()
+
+    print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
+
+```
+
+## Delete this section
 
 ```{python}
 print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
-print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt <= heads])/nsamples*100,4) , "%")
+print(f"probability of getting {heads} heads or less: ", round(len(cnt[cnt <= heads])/nsamples*100,4) , "%")
 ```
 
 
@@ -168,14 +200,21 @@ scipy.stats.binom.cdf(k=1, n=10, p=0.5)
 plt.hist(cnt)
 ```
 
+## Trying to Determine the Long-run Probability Does Not Always Make Sense
+
+In many classes of problems, the concept of a long-run probability doesn't always make sense. For example what is the long-run probability that our Sun will go nova tomorrow? How knows? We only have one sun and it's never gone nova before!
 
 ## Issues
 
+So in summary, some issues with using a frequentist approach is that:
+
 1. It does not tell you what the most likely answer is...
 1. It does not tell you if p=0.5 is wrong, just unlikely. You can still get 9 heads with p=0.5. This is your false positive rate.
+1. Long-run probabilities don't always exist
 
 Note that what we've done above is not the true way to calculate the p-value as most statistical methods use formulas to calculate it vs simulations.
 
+That's not to say a frequentist approach is bad and in fact bayesian inference converges to the frequentist approach with sufficiently large samples. However let's now have a look at Bayesian Inference.
 
 ## Bayesian Approach
 
