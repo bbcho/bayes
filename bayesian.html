@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -75,114 +75,157 @@ ul.task-list li input[type="checkbox"] {
 <p>First lets define frequentist statistics. A frequentist approach to statistics is concerned with calculating the long-run probability of an outcome or event. This is the method that you were taught in school involving a lot of math, probabilities and p-values. The implicit assumption that we’re making with this approach is that we have some ability to determine the long-run probability of an outcome. For example the long-run probability of getting heads on a coin toss would be 0.5 based on what we know about the mechanics of a coin toss. However, what if thought that the coin might not be a “fair” coin? How would we arrive at the probability of heads then if we had data on tosses of that coin?</p>
 <p>A frequentist approach to solving this problem (also called frequentist inference) would be to create a hypothesis and test it.</p>
 <p>https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=&amp;ved=2ahUKEwjRpbe58qH3AhWCM30KHaWkDREQFnoECBsQAw&amp;url=https%3A%2F%2Fvault.hanover.edu%2F~altermattw%2Fcourses%2F220%2Freadings%2FStatistical_Inference.pdf&amp;usg=AOvVaw1htPlxgll-9LxipNreRcQQ</p>
+<p>First we’re going to generate a sequence of 100 coin tosses using an unfair coin.</p>
 <div class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of heads in sample:  61</code></pre>
 </div>
 </div>
+<p>Next we have to create a null hypothesis which in our case is that the coin is a fair coin toss. The alternative hypothesis is that the probablity of heads is greater than 50% and thus unfair.</p>
 <p>h0: p = 0.5 # the null hypothesis that the coin is fair…</p>
 <p>h1: p &gt; 0.5 # the alternative hypothesis</p>
-<p>The goal here is to accept or reject the null hypothesis by determining the odds of getting your result under th null hypothesis that the coin is fair.</p>
-<p>Let’s assume that the total population of coin flips ever is 10,000,000. Then what is the probabality of getting the result above from that total population?</p>
+<p>The goal here is to accept or reject the null hypothesis by determining the odds of getting your result under the null hypothesis that the coin is fair.</p>
+<p>Frequentist inference asks the question, what would be the likelihood of getting 61 heads on 100 coin tosses if the coin was fair? To do this, we’ll do the 100 tosses of the fair coin, 10,000 times to see how often we get 61 or more heads out of a hundred.</p>
 <div class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
-<pre><code>Flip 100 coins, 10000 times...</code></pre>
+<pre><code>Flip 100 coins, 10000 times...
+
+Number of heads for each sample of 100 tosses (first 20 samples):
+
+[46 46 54 59 52 45 54 55 58 47 64 44 46 56 47 54 50 52 48 50]</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>array([46, 47, 48, 54, 47, 44, 49, 44, 47, 47, 52, 51, 44, 43, 50, 46, 48,
-       48, 49, 52])</code></pre>
 </div>
-</div>
+<p>Now let’s determine how many times we got 61 heads or more…</p>
 <div class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
-<pre><code>probability of getting 61 heads or more:  1.72 %</code></pre>
+<pre><code>probability of getting 61 heads or more:  1.83 %</code></pre>
 </div>
 </div>
-<p>Then, because the odds of getting 61 heads or more on a fair coin is only 1.99%, I would reject the null hypothesis h0, that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis.</p>
+<p>Then, because the odds of getting 61 heads or more on a fair coin is only 1.83%, I would reject the null hypothesis h0 that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis. Note that most statisticians reject the null hypothesis if the p-value is less than 5%. We also call the p-value you false-positive rate - if the coin was fair it would only show 61 heads (and that the coin was unfair) 1.83% of the time, causing you to reject the null hypothesis.</p>
+<p>However, there are a number of issues with using this approach.</p>
 </section>
 <section id="issue-1-just-because-the-result-is-unlikely-doesnt-make-it-impossible" class="level2">
 <h2 class="anchored" data-anchor-id="issue-1-just-because-the-result-is-unlikely-doesnt-make-it-impossible">Issue #1: Just because the result is unlikely, doesn’t make it impossible</h2>
+<p>Remember, even with the fair coin, we still got 61 or more heads 1.83% of the time. Also, even an unfair coin can sometimes produce results that would be indicative of a fair coin…</p>
 <div class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of heads in sample:  57
-probability of getting 57 heads or more:  9.74 %</code></pre>
+probability of getting 57 heads or more:  10.08 %</code></pre>
 </div>
 </div>
 <p>Even though we generated this sample using the same probability of heads of 0.6 as before, now we can’t reject the null hypothesis!</p>
 </section>
 <section id="issue-2-picking-the-right-hypothesises-is-hard" class="level2">
 <h2 class="anchored" data-anchor-id="issue-2-picking-the-right-hypothesises-is-hard">Issue #2: Picking the right hypothesises is hard</h2>
-<p>In the example above, just because we’ve rejected the null hypothesis, it doesn’t make the alternative hypothesis automatically correct! For example p &lt; 0.5. While this is a simple example with only 3 possible outcomes for p, there are many real life examples where there are many possible explanations aside from the null hypothesis.</p>
+<p>In the example above, just because we’ve rejected the null hypothesis, it doesn’t actually tell us what the true value of <code>p</code> is! For example another alternative hypothesis could be <code>p &lt; 0.5</code>. While this is a simple example with only 3 possible outcomes for p, there are many real life examples where there are many possible explanations aside from the null hypothesis.</p>
+<p>h0: p = 0.5</p>
+<p>h1: p &gt; 0.5</p>
+<p>h2: p &lt; 0.5</p>
 <div class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of heads in sample:  42
-probability of getting 42 heads or more:  95.15 %
+probability of getting 42 heads or more:  95.39 %
 2.5th Percentile = 40.0 heads 97.5th Percentile = 60.0 heads</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="bayesian_files/figure-html/cell-7-output-2.png" width="583" height="411"></p>
 </div>
 </div>
+<p>In this case, without knowing the answer which alternative hypothesis would you use? Also it’s bad practice just keep on testing various hypothesizes. This is because even with a result that shows a p-value of &lt; 5%, this still means that you could randomly get a false-positive. The chance of getting a false-positive with a p-value of 5% on 20 tests is 100%! i.e.&nbsp;random chance alone will give you a false-positive if you just run enough tests…</p>
 <div class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
-<pre><code>probability of getting 42 heads or more:  95.15 %
-probability of getting 42 heads or less:  7.14 %</code></pre>
+<pre><code>probability of getting 49 heads or more:  62.57 %
+probability of getting 49 heads or more:  62.57 %
+probability of getting 51 heads or more:  46.45 %
+probability of getting 52 heads or more:  38.84 %
+probability of getting 58 heads or more:  6.91 %
+probability of getting 44 heads or more:  90.3 %
+probability of getting 47 heads or more:  75.92 %
+probability of getting 57 heads or more:  10.08 %
+probability of getting 48 heads or more:  69.7 %
+probability of getting 42 heads or more:  95.39 %
+probability of getting 46 heads or more:  81.77 %
+probability of getting 49 heads or more:  62.57 %
+probability of getting 50 heads or more:  54.58 %
+probability of getting 48 heads or more:  69.7 %
+probability of getting 52 heads or more:  38.84 %
+probability of getting 57 heads or more:  10.08 %
+probability of getting 51 heads or more:  46.45 %
+probability of getting 45 heads or more:  86.56 %
+probability of getting 61 heads or more:  1.83 %
+probability of getting 47 heads or more:  75.92 %</code></pre>
 </div>
 </div>
+</section>
+<section id="delete-this-section" class="level2">
+<h2 class="anchored" data-anchor-id="delete-this-section">Delete this section</h2>
 <div class="cell" data-execution_count="8">
+<div class="cell-output cell-output-stdout">
+<pre><code>probability of getting 47 heads or more:  75.92 %
+probability of getting 47 heads or less:  30.3 %</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>probability of getting 5 heads or more:  100.0 %</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of heads in sample:  47</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="12">
-<div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>array([55, 53, 55, 45, 41, 43, 49, 46, 50, 53, 46, 51, 52, 59, 47, 47, 49,
-       58, 49, 53, 51, 52, 62, 44, 49, 50, 53, 44, 50, 44, 41, 43, 64, 48,
-       43, 51, 54, 52, 46, 49, 50, 41, 40, 64, 52, 49, 55, 49, 50, 41, 50,
-       55, 43, 43, 56, 40, 43, 54, 55, 53, 45, 59, 41, 50, 57, 48, 50, 53,
-       53, 46, 48, 52, 54, 52, 49, 53, 46, 50, 54, 46, 53, 50, 46, 58, 51,
-       53, 46, 54, 46, 52, 54, 54, 45, 53, 44, 44, 61, 51, 55, 51, 36, 44,
-       46, 54, 50, 49, 57, 53, 49, 56, 55, 47, 58, 51, 52, 49, 55, 54, 42,
-       51, 48, 54, 48, 39, 48, 54, 48, 46, 47, 50, 50, 51, 51, 56, 51, 45,
-       55, 47, 55, 48, 47, 49, 52, 51, 54, 59, 43, 61, 58, 47, 49, 52, 48,
-       51, 54, 38, 46, 49, 51, 37, 54, 50, 54, 56, 46, 48, 55, 43, 45, 44,
-       43, 39, 49, 56, 51, 49, 40, 47, 49, 53, 51, 55, 52, 47, 48, 58, 45,
-       40, 47, 46, 47, 50, 44, 51, 53, 50, 48, 44, 47, 51])</code></pre>
+<pre><code>Number of heads in sample:  46</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>array([60, 50, 49, 56, 51, 62, 50, 53, 52, 58, 50, 62, 45, 42, 52, 50, 47,
+       51, 49, 51, 54, 62, 51, 49, 52, 57, 47, 57, 59, 50, 46, 41, 39, 45,
+       54, 48, 46, 47, 53, 52, 45, 58, 45, 54, 53, 49, 49, 49, 49, 48, 45,
+       56, 47, 53, 53, 51, 55, 44, 60, 57, 46, 48, 52, 52, 56, 51, 44, 47,
+       50, 52, 51, 37, 52, 43, 53, 52, 54, 51, 44, 51, 56, 48, 46, 57, 51,
+       51, 47, 45, 53, 50, 41, 49, 51, 56, 59, 44, 46, 47, 58, 51, 44, 48,
+       54, 44, 48, 53, 56, 53, 45, 53, 50, 53, 54, 48, 53, 43, 44, 54, 49,
+       52, 50, 54, 50, 47, 39, 44, 54, 51, 57, 46, 50, 45, 46, 58, 52, 60,
+       49, 49, 54, 49, 49, 48, 47, 50, 47, 50, 49, 53, 48, 56, 53, 48, 50,
+       51, 47, 37, 49, 50, 42, 43, 44, 43, 53, 56, 50, 49, 51, 47, 49, 52,
+       44, 51, 51, 49, 43, 54, 45, 52, 45, 52, 45, 44, 56, 57, 49, 56, 61,
+       57, 45, 54, 55, 47, 45, 53, 54, 45, 52, 49, 55, 49])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
 <div class="cell-output cell-output-stdout">
-<pre><code>probability of getting 47 heads or more:  74.8 %</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="15">
-<div class="cell-output cell-output-display" data-execution_count="15">
-<pre><code>0.0107421875</code></pre>
+<pre><code>probability of getting 46 heads or more:  83.1 %</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display" data-execution_count="16">
-<pre><code>(array([  3.,  10.,  58., 118., 197., 285., 185., 109.,  25.,  10.]),
- array([32. , 35.4, 38.8, 42.2, 45.6, 49. , 52.4, 55.8, 59.2, 62.6, 66. ]),
+<pre><code>0.0107421875</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>(array([  3.,  13.,  41., 112., 202., 317., 168.,  99.,  30.,  15.]),
+ array([33. , 36.2, 39.4, 42.6, 45.8, 49. , 52.2, 55.4, 58.6, 61.8, 65. ]),
  &lt;BarContainer object of 10 artists&gt;)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-17-output-2.png" width="575" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-18-output-2.png" width="575" height="411"></p>
 </div>
 </div>
 </section>
+<section id="trying-to-determine-the-long-run-probability-does-not-always-make-sense" class="level2">
+<h2 class="anchored" data-anchor-id="trying-to-determine-the-long-run-probability-does-not-always-make-sense">Trying to Determine the Long-run Probability Does Not Always Make Sense</h2>
+<p>In many classes of problems, the concept of a long-run probability doesn’t always make sense. For example what is the long-run probability that our Sun will go nova tomorrow? How knows? We only have one sun and it’s never gone nova before!</p>
+</section>
 <section id="issues" class="level2">
 <h2 class="anchored" data-anchor-id="issues">Issues</h2>
+<p>So in summary, some issues with using a frequentist approach is that:</p>
 <ol type="1">
 <li>It does not tell you what the most likely answer is…</li>
 <li>It does not tell you if p=0.5 is wrong, just unlikely. You can still get 9 heads with p=0.5. This is your false positive rate.</li>
+<li>Long-run probabilities don’t always exist</li>
 </ol>
 <p>Note that what we’ve done above is not the true way to calculate the p-value as most statistical methods use formulas to calculate it vs simulations.</p>
+<p>That’s not to say a frequentist approach is bad and in fact bayesian inference converges to the frequentist approach with sufficiently large samples. However let’s now have a look at Bayesian Inference.</p>
 </section>
 <section id="bayesian-approach" class="level2">
 <h2 class="anchored" data-anchor-id="bayesian-approach">Bayesian Approach</h2>
@@ -199,23 +242,17 @@ probability of getting 42 heads or less:  7.14 %</code></pre>
 <p>http://sellsidehandbook.com/2018/12/09/statistical-inference-and-hypothesis-testing/</p>
 <p>https://www.statisticshowto.com/frequentist-statistics/</p>
 <p>Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes.</p>
-<p>In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating the scientific method into the analytical process.</p>
-<div class="cell" data-execution_count="17">
-<div class="cell-output cell-output-display" data-execution_count="17">
+<p>In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.</p>
+<p>Like above, let’s say we have a coin and we want to determine if it’s fair. First lets generate a sample of ten coin tosses:</p>
+<div class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>array([1, 0, 1, 1, 1, 0, 1, 1, 1, 1])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="18">
-<div class="cell-output cell-output-display" data-execution_count="18">
+<p>Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p.&nbsp;</p>
+<div class="cell" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>0.8</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="20">
-<div class="cell-output cell-output-display" data-execution_count="20">
-<pre><code>Text(0, 0.5, 'Estimation of P')</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-21-output-2.png" width="1556" height="434"></p>
 </div>
 </div>
 <div class="cell" data-execution_count="21">
@@ -223,12 +260,20 @@ probability of getting 42 heads or less:  7.14 %</code></pre>
 <pre><code>Text(0, 0.5, 'Estimation of P')</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-22-output-2.png" width="1556" height="429"></p>
+<p><img src="bayesian_files/figure-html/cell-22-output-2.png" width="1556" height="434"></p>
 </div>
 </div>
 <div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>Text(0, 0.5, 'Estimation of P')</code></pre>
+</div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-23-output-1.png" width="571" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-23-output-2.png" width="1556" height="429"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-24-output-1.png" width="571" height="411"></p>
 </div>
 </div>
 </section>
