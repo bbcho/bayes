@@ -243,9 +243,20 @@ Let's start with the same example as in the frequentist example is an unfair coi
 
 With the first toss we would have no data and so we would have what we call an uniformed prior. Thus, any value for `p` is equally likely.
 
+Like above, let's say we have a coin and we want to determine if it's fair. First lets generate a sample of ten coin tosses:
+
 ```{python}
 import scipy.stats as stats
 
+<<<<<<< HEAD
+# H = 1, T = 0
+p = 0.5 # remember we don't know this
+
+rng = np.random.RandomState(13)
+data = rng.binomial(n=1, size=10, p=p)
+data
+```
+=======
 dist = stats.beta
 
 p = 0.6 # probability of heads on an unfair coin - this is unknown
@@ -257,6 +268,7 @@ heads = data.sum()
 
 n_trials = [0, 1, 2, 3, 10, 20, 50, 100]
 x = np.linspace(0, 1, 100)
+>>>>>>> 9e683b1e3e5a61055e9bef3a4ac57d0ce48d8a8f
 
 Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p. 
 
