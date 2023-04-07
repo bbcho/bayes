@@ -236,7 +236,7 @@ https://www.statisticshowto.com/frequentist-statistics/
 
 Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes. 
 
-In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating the scientific method into the analytical process.
+In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.
 
 Let's start with the same example as in the frequentist example is an unfair coin (that we don't know).
 
@@ -258,6 +258,11 @@ heads = data.sum()
 n_trials = [0, 1, 2, 3, 10, 20, 50, 100]
 x = np.linspace(0, 1, 100)
 
+Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p. 
+
+```{python}
+
+```
 
 # For the already prepared, I'm using Binomial's conj. prior.
 for k, N in enumerate(n_trials):
