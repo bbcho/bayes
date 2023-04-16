@@ -81,7 +81,7 @@ print(cnt[:20])
 Now let's determine how many times we got 61 heads or more...
 
 ```{python}
-print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
+print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4), "%")
 ```
 
 Then, because the odds of getting 61 heads or more on a fair coin is only 1.83%, I would reject the null hypothesis h0 that the coin is fair. This is your p-value, the odds of getting this result under the null hypothesis. Note that most statisticians reject the null hypothesis if the p-value is less than 5%. We also call the p-value you false-positive rate - if the coin was fair it would only show 61 heads (and that the coin was unfair) 1.83% of the time, causing you to reject the null hypothesis.
@@ -93,7 +93,7 @@ However, there are a number of issues with using this approach.
 Remember, even with the fair coin, we still got 61 or more heads 1.83% of the time. Also, even an unfair coin can sometimes produce results that would be indicative of a fair coin... 
 
 ```{python}
-rng = np.random.RandomState(12) #15 for 40
+rng = np.random.RandomState(12) # 15 for 40
 data = rng.binomial(n=1, size=ntoss, p=p)
 heads = data.sum()
 print("Number of heads in sample: ", heads)
@@ -146,61 +146,6 @@ for i in range(0,20):
 
 ```
 
-## Delete this section
-
-```{python}
-print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
-print(f"probability of getting {heads} heads or less: ", round(len(cnt[cnt <= heads])/nsamples*100,4) , "%")
-```
-
-
-```{python}
-print("probability of getting 5 heads or more: ", round(len(cnt[cnt >= 5])/nsamples*100,2) , "%")
-```
-
-
-```{python}
-ntoss = 100
-nsamples = 1000
-```
-
-
-```{python}
-data = rng.binomial(n=1, size=ntoss, p=p)
-heads = data.sum()
-print("Number of heads in sample: ", heads)
-```
-
-
-```{python}
-sample = np.random.choice(pop, size=(ntoss,nsamples))
-```
-
-```{python}
-cnt = sample.sum(axis=0)
-cnt[:200]
-```
-
-
-```{python}
-print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,2) , "%")
-```
-
-
-```{python}
-import scipy
-```
-
-
-```{python}
-scipy.stats.binom.cdf(k=1, n=10, p=0.5)
-```
-
-
-```{python}
-plt.hist(cnt)
-```
-
 ## Trying to Determine the Long-run Probability Does Not Always Make Sense
 
 In many classes of problems, the concept of a long-run probability doesn't always make sense. For example what is the long-run probability that our Sun will go nova tomorrow? How knows? We only have one sun and it's never gone nova before!
@@ -240,27 +185,24 @@ https://stats.stackexchange.com/questions/2272/whats-the-difference-between-a-co
 
 https://www.amazon.ca/Introduction-Bayesian-Statistics-William-Bolstad/dp/1118091566
 
-Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes. 
+Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes.
 
 In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.
 
-Let's start with the same example as in the frequentist example is an unfair coin (that we don't know).
-
-
-With the first toss we would have no data and so we would have what we call an uniformed prior. Thus, any value for `p` is equally likely.
-
-Like above, let's say we have a coin and we want to determine if it's fair. First lets generate a sample of ten coin tosses:
+Let's start with the same example as in the frequentist example, let's say we have a coin and we want to determine if it's fair. First let's toss a single coin.
 
 ```{python}
 import scipy.stats as stats
 
 # H = 1, T = 0
-p = config.p1
+p = config.p2
 
 rng = np.random.RandomState(13)
-data = rng.binomial(n=1, size=10, p=p)
+data = rng.binomial(n=1, size=1, p=p)
 data
 ```
+
+Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p. 
 
 ```{python}
 dist = stats.beta
@@ -276,7 +218,7 @@ n_trials = [0, 1, 2, 3, 10, 20, 50, 100]
 x = np.linspace(0, 1, 100)
 ```
 
-Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p. 
+
 
 ```{python}
 
@@ -311,7 +253,8 @@ print("First 10 coin tosses: ", data[:10], "...")
 ```
 
 
+     
 
 
-
-
+ 
+With the first toss we would have no data and so we would have what we call an uniformed prior. Thus, any value for `p` is equally likely.
