@@ -198,11 +198,78 @@ import scipy.stats as stats
 p = config.p2
 
 rng = np.random.RandomState(13)
-data = rng.binomial(n=1, size=1, p=p)
+data = rng.binomial(n=1, size=10, p=p)
 data
 ```
 
 Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p. 
+
+To start, we will try a range of values for p from 0.1 to 0.9 and flip the coin 10 times to generate a sample. We will then repeat this sample of 10 flips 100 times to see how often we see 2 heads for each value of p.
+
+First we will run with `p=0.1`.
+
+```{python}
+p = 0.1
+
+rng = np.random.RandomState(13)
+ps = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+cnt = np.array([0,0,0,0,0,0,0,0,0])
+
+for i in range(0,1000):
+  tmp = rng.binomial(n=1, size=10, p=p)
+  if tmp.sum() == data.sum():
+    cnt[0] += 1
+
+fig, ax = plt.subplots(1,1)
+
+ax.bar(x=ps, height=cnt, width=0.1);
+```
+
+Now let's run it again for `p=0.2` so see how often we get 2 heads.
+
+```{python}
+#| echo: false
+p = 0.2
+
+for i in range(0,1000):
+  tmp = rng.binomial(n=1, size=10, p=p)
+  if tmp.sum() == data.sum():
+    cnt[1] += 1
+
+fig, ax = plt.subplots(1,1)
+
+ax.bar(x=ps, height=cnt, width=0.1);
+```
+
+Finally we will run it for all values for `p` between 0.1 and 0.9.
+
+```{python}
+#| echo: false
+cnt = np.array([0,0,0,0,0,0,0,0,0])
+
+for j in ps:
+  p = j
+  idx = ps.index(p)
+
+  for i in range(0,1000):
+    tmp = rng.binomial(n=1, size=10, p=p)
+    if tmp.sum() == data.sum():
+      cnt[idx] += 1
+
+fig, ax = plt.subplots(1,1)
+
+ax.bar(x=ps, height=cnt, width=0.1);
+```
+
+This now gives us the number of times that 1000 draws of 10 coin tosses would give us 2 heads for each value of `p`. In other words we now have a probabiility distribution for the value of `p` given the data that we have (i.e. 2 heads out of 10 coin tosses). This is the essence of bayesian inference, basically counting. Where we make some assumption on the underlying data generating process and given this *a priori* assumption, we determine how likely each parameter is in generating the data that we see.  
+
+So what we did in summary was:
+
+1. View the data and assumed that the underlying data generating process was a bionomial distribution.
+2. For each value of `p`, determine what is the liklihood of getting 2 heads out of 10.
+3. Put this together in a postierior distribution for `p`. This is our estimate for `p` with our uncertainty built it.
+
+
 
 ```{python}
 dist = stats.beta
@@ -242,6 +309,7 @@ plt.tight_layout()
 ```
 
 ```{python}
+
 p = config.p2
 ntoss = 100
 
@@ -253,8 +321,7 @@ print("First 10 coin tosses: ", data[:10], "...")
 ```
 
 
-     
-
+ 
 
  
 With the first toss we would have no data and so we would have what we call an uniformed prior. Thus, any value for `p` is equally likely.

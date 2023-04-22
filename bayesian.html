@@ -185,7 +185,7 @@ Number of heads for each sample of 100 tosses (first 20 samples):
 </div>
 <p>Now let’s determine how many times we got 61 heads or more…</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"probability of getting </span><span class="sc">{</span>heads<span class="sc">}</span><span class="ss"> heads or more: "</span>, <span class="bu">round</span>(<span class="bu">len</span>(cnt[cnt <span class="op">&gt;=</span> heads])<span class="op">/</span>nsamples<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>) , <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"probability of getting </span><span class="sc">{</span>heads<span class="sc">}</span><span class="ss"> heads or more: "</span>, <span class="bu">round</span>(<span class="bu">len</span>(cnt[cnt <span class="op">&gt;=</span> heads])<span class="op">/</span>nsamples<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>), <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>probability of getting 61 heads or more:  1.83 %</code></pre>
 </div>
@@ -197,7 +197,7 @@ Number of heads for each sample of 100 tosses (first 20 samples):
 <h2 class="anchored" data-anchor-id="issue-1-just-because-the-result-is-unlikely-doesnt-make-it-impossible">Issue #1: Just because the result is unlikely, doesn’t make it impossible</h2>
 <p>Remember, even with the fair coin, we still got 61 or more heads 1.83% of the time. Also, even an unfair coin can sometimes produce results that would be indicative of a fair coin…</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">12</span>) <span class="co">#15 for 40</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">12</span>) <span class="co"># 15 for 40</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of heads in sample: "</span>, heads)</span>
@@ -317,57 +317,97 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p2</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">1</span>, p<span class="op">=</span>p)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">10</span>, p<span class="op">=</span>p)</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>array([0])</code></pre>
+<pre><code>array([0, 1, 0, 0, 0, 1, 0, 0, 0, 0])</code></pre>
 </div>
 </div>
 <p>Based on this sequence, what is the most probable value of p? A bayesian approach would ask how often would this sequence of data occur if p was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of p.&nbsp;</p>
+<p>To start, we will try a range of values for p from 0.1 to 0.9 and flip the coin 10 times to generate a sample. We will then repeat this sample of 10 flips 100 times to see how often we see 2 heads for each value of p.</p>
+<p>First we will run with <code>p=0.1</code>.</p>
 <div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> stats.beta</span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p2 </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>ntoss <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>) <span class="co">#15 for 40</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>]</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For the already prepared, I'm using Binomial's conj. prior.</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="kw">in</span> [<span class="dv">0</span>, <span class="bu">len</span>(n_trials)<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="va">None</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data[:N].<span class="bu">sum</span>()</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span> <span class="op">+</span> heads, <span class="dv">1</span> <span class="op">+</span> N <span class="op">-</span> heads)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, y, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, heads))</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    leg <span class="op">=</span> plt.legend()</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> [<span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>,<span class="fl">0.5</span>,<span class="fl">0.6</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">1000</span>):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  tmp <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">10</span>, p<span class="op">=</span>p)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> tmp.<span class="bu">sum</span>() <span class="op">==</span> data.<span class="bu">sum</span>():</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    cnt[<span class="dv">0</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>ax.bar(x<span class="op">=</span>ps, height<span class="op">=</span>cnt, width<span class="op">=</span><span class="fl">0.1</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-11-output-1.png" width="662" height="468"></p>
+<p><img src="bayesian_files/figure-html/cell-10-output-1.png" width="575" height="411"></p>
 </div>
 </div>
+<p>Now let’s run it again for <code>p=0.2</code> so see how often we get 2 heads.</p>
+<div class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-11-output-1.png" width="575" height="411"></p>
+</div>
+</div>
+<p>Finally we will run it for all values for <code>p</code> between 0.1 and 0.9.</p>
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p2</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ntoss <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>) <span class="co">#15 for 40</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of heads in sample: "</span>, heads)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"First 10 coin tosses: "</span>, data[:<span class="dv">10</span>], <span class="st">"..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-12-output-1.png" width="575" height="411"></p>
+</div>
+</div>
+<p>This now gives us the number of times that 1000 draws of 10 coin tosses would give us 2 heads for each value of <code>p</code>. In other words we now have a probabiility distribution for the value of <code>p</code> given the data that we have (i.e.&nbsp;2 heads out of 10 coin tosses). This is the essence of bayesian inference, basically counting. Where we make some assumption on the underlying data generating process and given this <em>a priori</em> assumption, we determine how likely each parameter is in generating the data that we see.</p>
+<p>So what we did in summary was:</p>
+<ol type="1">
+<li>View the data and assumed that the underlying data generating process was a bionomial distribution.</li>
+<li>For each value of <code>p</code>, determine what is the liklihood of getting 2 heads out of 10.</li>
+<li>Put this together in a postierior distribution for <code>p</code>. This is our estimate for <code>p</code> with our uncertainty built it.</li>
+</ol>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> stats.beta</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p2 </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ntoss <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>) <span class="co">#15 for 40</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>]</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For the already prepared, I'm using Binomial's conj. prior.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="kw">in</span> [<span class="dv">0</span>, <span class="bu">len</span>(n_trials)<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data[:N].<span class="bu">sum</span>()</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span> <span class="op">+</span> heads, <span class="dv">1</span> <span class="op">+</span> N <span class="op">-</span> heads)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, y, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, heads))</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    leg <span class="op">=</span> plt.legend()</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-14-output-1.png" width="662" height="468"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p2</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ntoss <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>) <span class="co">#15 for 40</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of heads in sample: "</span>, heads)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"First 10 coin tosses: "</span>, data[:<span class="dv">10</span>], <span class="st">"..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of heads in sample:  61
 First 10 coin tosses:  [0 1 0 0 0 1 0 0 0 0] ...</code></pre>
