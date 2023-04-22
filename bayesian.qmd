@@ -187,7 +187,16 @@ https://www.amazon.ca/Introduction-Bayesian-Statistics-William-Bolstad/dp/111809
 
 Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes.
 
-In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.
+In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It asks the question, "what do I think is the underlying data generating process" and then uses this to determine the probability of the data given the model. 
+
+It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.
+
+The general recipe for Bayesian inference is:
+
+1. Pick a model that could have generated the data that you see (i.e. linear model, binomial distribution etc...)
+2. Pick a prior distribution for the parameters of the model based on your knowledge of the process if any (this can also be uninformed).
+3. Count the number of ways that your assumed model could have generated your data for each value of your parameter(s).
+4. Parameters with more ways to produce your data are more plausible - put this together in a posterior distribution for your parameters.
 
 Let's start with the same example as in the frequentist example, let's say we have a coin and we want to determine if it's fair. First let's toss a single coin.
 
@@ -263,31 +272,19 @@ ax.bar(x=ps, height=cnt, width=0.1);
 
 This now gives us the number of times that 1000 draws of 10 coin tosses would give us 2 heads for each value of `p`. In other words we now have a probabiility distribution for the value of `p` given the data that we have (i.e. 2 heads out of 10 coin tosses). This is the essence of bayesian inference, basically counting. Where we make some assumption on the underlying data generating process and given this *a priori* assumption, we determine how likely each parameter is in generating the data that we see.  
 
-So what we did in summary was:
+What we did was:
 
-1. View the data and assumed that the underlying data generating process was a bionomial distribution.
-2. For each value of `p`, determine what is the liklihood of getting 2 heads out of 10.
-3. Put this together in a postierior distribution for `p`. This is our estimate for `p` with our uncertainty built it.
+1. I think the underlying data generating process is a binomial distribution.
+2. However, I do not know what the value of `p` is so I'm going to try all values of `p` (uninformed prior).
+3. For each value of `p`, I counted all the ways that my process can generate the data that I see.
+4. Put this together into a posterior distribution for `p`. Values of `p` with more ways to produce my data are more plausible. This is my estimate for `p` with my uncertainty built it.
 
+I'm now going to introduce you to a slightly easier way for us to perform that same calculation. The issue with the above is that it is computationally expensive and hard to update with new data without rerunning the whole thing. 
 
 
 ```{python}
-dist = stats.beta
-
-p = config.p2 
-ntoss = 100
-
-rng = np.random.RandomState(13) #15 for 40
-data = rng.binomial(n=1, size=ntoss, p=p)
-heads = data.sum()
-
 n_trials = [0, 1, 2, 3, 10, 20, 50, 100]
 x = np.linspace(0, 1, 100)
-```
-
-
-
-```{python}
 
 # For the already prepared, I'm using Binomial's conj. prior.
 for k, N in enumerate(n_trials):

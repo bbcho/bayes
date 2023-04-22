@@ -308,7 +308,15 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <p>https://stats.stackexchange.com/questions/2272/whats-the-difference-between-a-confidence-interval-and-a-credible-interval</p>
 <p>https://www.amazon.ca/Introduction-Bayesian-Statistics-William-Bolstad/dp/1118091566</p>
 <p>Bayesian inference and Bayesian statistics in general is named after the statistician Thomas Bayes.</p>
-<p>In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.</p>
+<p>In contrast to the frequentist method, Bayesian inference is focused on the probability that something is true. It asks the question, “what do I think is the underlying data generating process” and then uses this to determine the probability of the data given the model.</p>
+<p>It begins with a measure of belief in a particular model or number, then with the addition of data, this belief is updated to reflect this new data. In my opinion, it is a more intuitive and natural method for incorporating data into the analytical process.</p>
+<p>The general recipe for Bayesian inference is:</p>
+<ol type="1">
+<li>Pick a model that could have generated the data that you see (i.e.&nbsp;linear model, binomial distribution etc…)</li>
+<li>Pick a prior distribution for the parameters of the model based on your knowledge of the process if any (this can also be uninformed).</li>
+<li>Count the number of ways that your assumed model could have generated your data for each value of your parameter(s).</li>
+<li>Parameters with more ways to produce your data are more plausible - put this together in a posterior distribution for your parameters.</li>
+</ol>
 <p>Let’s start with the same example as in the frequentist example, let’s say we have a coin and we want to determine if it’s fair. First let’s toss a single coin.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span>
@@ -319,7 +327,7 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">10</span>, p<span class="op">=</span>p)</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="50">
 <pre><code>array([0, 1, 0, 0, 0, 1, 0, 0, 0, 0])</code></pre>
 </div>
 </div>
@@ -358,12 +366,14 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 </div>
 </div>
 <p>This now gives us the number of times that 1000 draws of 10 coin tosses would give us 2 heads for each value of <code>p</code>. In other words we now have a probabiility distribution for the value of <code>p</code> given the data that we have (i.e.&nbsp;2 heads out of 10 coin tosses). This is the essence of bayesian inference, basically counting. Where we make some assumption on the underlying data generating process and given this <em>a priori</em> assumption, we determine how likely each parameter is in generating the data that we see.</p>
-<p>So what we did in summary was:</p>
+<p>What we did was:</p>
 <ol type="1">
-<li>View the data and assumed that the underlying data generating process was a bionomial distribution.</li>
-<li>For each value of <code>p</code>, determine what is the liklihood of getting 2 heads out of 10.</li>
-<li>Put this together in a postierior distribution for <code>p</code>. This is our estimate for <code>p</code> with our uncertainty built it.</li>
+<li>I think the underlying data generating process is a binomial distribution.</li>
+<li>However, I do not know what the value of <code>p</code> is so I’m going to try all values of <code>p</code> (uninformed prior).</li>
+<li>For each value of <code>p</code>, I counted all the ways that my process can generate the data that I see.</li>
+<li>Put this together into a posterior distribution for <code>p</code>. Values of <code>p</code> with more ways to produce my data are more plausible. This is my estimate for <code>p</code> with my uncertainty built it.</li>
 </ol>
+<p>I’m now going to introduce you to a slightly easier way for us to perform that same calculation. The issue with the above is that it is computationally expensive and hard to update with new data without rerunning the whole thing.</p>
 <div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> stats.beta</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
