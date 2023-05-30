@@ -433,6 +433,7 @@ First off, let's try linear regression using bayesian inference. Here, I've preg
 import linearregression as lr
 
 plt.scatter(lr.x, lr.y);
+print(len(lr.x), len(lr.y))
 ```
 
 We can now also turn to more sophisticated tools for linear regression. One that I like is PYMC but there are many other packages such as Numpyro, Tensorflow Probability, and Pyro. I'm going to use PYMC here.
@@ -459,16 +460,17 @@ $$
 y_i = \mathcal{N}(a + b x_i, \sigma)
 $$
 
-We do this because bayesian inference perfers to think in probability distributions. At the same time, we do not have any prior knowledge of `a` or `b` so we will use a uniform distribution as our priors with very large bounds. However one thing we do know from the data is that both `a` and `b` are above zero.
+We do this because bayesian inference perfers to think in probability distributions. At the same time, we do not have any prior knowledge of `a` or `b` so we will use a uniform distribution as our priors with very large bounds. However one thing we do know from the data is that both `a` and `b` are above zero. Similarly for sigma, since we do not know much about it, we will use a half-normal distribution with a VERY wide sigma.
 
 ```{python}
 with pm.Model() as model:
   # define priors
   a = pm.Uniform('a', lower=0, upper=1000)
   b = pm.Uniform('b', lower=0, upper=1000)
-  sigma = pm.Uniform('sigma', lower=0, upper=1000)
+  # sigma = pm.Uniform('sigma', lower=0, upper=1000)
+  sigma = pm.HalfNormal('sigma', sigma=100)
 
-  y = a + b * x
+  y = a + b * lr.x
 
   # define likelihood
   likelihood = pm.Normal('y', mu=y, sigma=sigma, observed=lr.y)
@@ -481,11 +483,26 @@ with model:
   # Interence Here!
   # draw 3000 posterior samples using NUTS sampling
   idata = pm.sample(3000)
+
 ```
 
 
+```{python}
+import arviz as az
 
+az.plot_trace(idata, figsize=(8,10));
 
+```
+
+```{python}
+import xarray as xr
+# idata.posterior["y_model"] = idata.posterior["a"] + idata.posterior["b"] * xr.DataArray(x)
+
+# _, ax = plt.subplots(figsize=(7, 7))
+# az.plot_lm(idata=idata, y="y", num_samples=100, axes=ax, y_model="y_model")
+# ax.set_title("Posterior predictive regression lines")
+# ax.set_xlabel("x");
+```
 
 ## Practical Example 2: Pipeline Outage Data
 
