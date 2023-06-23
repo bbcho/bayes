@@ -222,39 +222,31 @@ probability of getting 57 heads or more:  10.08 %</code></pre>
 <p>h0: p = 0.5</p>
 <p>h1: p &gt; 0.5</p>
 <p>h2: p &lt; 0.5</p>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> config.p3</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">101</span>) <span class="co">#15 for 40</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span>p)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of heads in sample: "</span>, heads)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"probability of getting </span><span class="sc">{</span>heads<span class="sc">}</span><span class="ss"> heads or more: "</span>, <span class="bu">round</span>(<span class="bu">len</span>(cnt[cnt <span class="op">&gt;=</span> heads])<span class="op">/</span>nsamples<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>) , <span class="st">"%"</span>)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>plt.hist(sample.mean(axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2.5th Percentile = "</span> <span class="op">+</span> <span class="bu">str</span>(np.percentile(sample.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>), <span class="fl">2.5</span>)) <span class="op">+</span> <span class="st">" heads"</span>, </span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"97.5th Percentile = "</span> <span class="op">+</span> <span class="bu">str</span>(np.percentile(sample.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>), <span class="fl">97.5</span>)) <span class="op">+</span> <span class="st">" heads"</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of heads in sample:  42
-probability of getting 42 heads or more:  95.39 %
-2.5th Percentile = 40.0 heads 97.5th Percentile = 60.0 heads</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-7-output-2.png" width="583" height="411"></p>
-</div>
-</div>
+<!-- ```{python} -->
+<!-- p = config.p3 -->
+<!---->
+<!-- rng = np.random.RandomState(101) #15 for 40 -->
+<!-- data = rng.binomial(n=1, size=ntoss, p=p) -->
+<!-- heads = data.sum() -->
+<!-- print("Number of heads in sample: ", heads) -->
+<!---->
+<!-- print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%") -->
+<!---->
+<!-- plt.hist(sample.mean(axis=0)) -->
+<!-- print( -->
+<!--     "2.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 2.5)) + " heads",  -->
+<!--     "97.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 97.5)) + " heads" -->
+<!--     ) -->
+<!-- ``` -->
 <p>In this case, without knowing the answer which alternative hypothesis would you use? Also it’s bad practice just keep on testing various hypothesizes. This is because even with a result that shows a p-value of &lt; 5%, this still means that you could randomly get a false-positive. The chance of getting a false-positive with a p-value of 5% on 20 tests is 100%! i.e.&nbsp;random chance alone will give you a false-positive if you just run enough tests…</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">10</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">20</span>):</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"probability of getting </span><span class="sc">{</span>heads<span class="sc">}</span><span class="ss"> heads or more: "</span>, <span class="bu">round</span>(<span class="bu">len</span>(cnt[cnt <span class="op">&gt;=</span> heads])<span class="op">/</span>nsamples<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>) , <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">10</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">20</span>):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>ntoss, p<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data.<span class="bu">sum</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"probability of getting </span><span class="sc">{</span>heads<span class="sc">}</span><span class="ss"> heads or more: "</span>, <span class="bu">round</span>(<span class="bu">len</span>(cnt[cnt <span class="op">&gt;=</span> heads])<span class="op">/</span>nsamples<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>) , <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>probability of getting 49 heads or more:  62.57 %
 probability of getting 49 heads or more:  62.57 %
@@ -331,7 +323,7 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <li>Parameters with more ways to produce your data are more plausible - put this together in a posterior distribution for your parameters.</li>
 </ol>
 <p>Let’s start with the same example as in the frequentist example, let’s say we have a coin and we want to determine if it’s fair. Let’s generate a sequence of 10 coin tosses.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
 <pre><code>[0 1 0 0 0 1 0 0 0 0]</code></pre>
 </div>
@@ -340,41 +332,41 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <p>Based on the sequence above, what is the most probable value of <code>p</code>? A bayesian approach would ask how often would this sequence of data occur if <code>p</code> was 0.5? If it was 0.6? If it was 0.7? etc. We can then use this information to determine the most likely value of <code>p</code>.</p>
 <p>Since we don’t have any information aside from the data on the value of <code>p</code> we will start with an uninformed prior (i.e.&nbsp;we will try all values of <code>p</code>). We will try a range of values for <code>p</code> from 0.1 to 0.9 and flip the coin 10 times to generate a sample. We will then repeat this sample of 10 flips 1000 times to see how often we see 2 heads for each value of <code>p</code>.</p>
 <p>First we will run with <code>p=0.1</code>.</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.1</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> [<span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>,<span class="fl">0.5</span>,<span class="fl">0.6</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>]</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>])</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">1000</span>):</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  tmp <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">10</span>, p<span class="op">=</span>p)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> tmp.<span class="bu">sum</span>() <span class="op">==</span> data.<span class="bu">sum</span>():</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    cnt[<span class="dv">0</span>] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>ax.bar(x<span class="op">=</span>ps, height<span class="op">=</span>cnt, width<span class="op">=</span><span class="fl">0.1</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> [<span class="fl">0.1</span>,<span class="fl">0.2</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>,<span class="fl">0.5</span>,<span class="fl">0.6</span>,<span class="fl">0.7</span>,<span class="fl">0.8</span>,<span class="fl">0.9</span>]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>cnt <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">1000</span>):</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  tmp <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span><span class="dv">10</span>, p<span class="op">=</span>p)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> tmp.<span class="bu">sum</span>() <span class="op">==</span> data.<span class="bu">sum</span>():</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    cnt[<span class="dv">0</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">2</span>))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>ax.bar(x<span class="op">=</span>ps, height<span class="op">=</span>cnt, width<span class="op">=</span><span class="fl">0.1</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-10-output-1.png" width="575" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-9-output-1.png" width="500" height="189"></p>
 </div>
 </div>
 <p>Now let’s run it again for <code>p=0.2</code> so see how often we get 2 heads.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-11-output-1.png" width="575" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-10-output-1.png" width="500" height="189"></p>
 </div>
 </div>
 <p>Then we will run it for all values for <code>p</code> between 0.1 and 0.9.</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-12-output-1.png" width="575" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-11-output-1.png" width="500" height="189"></p>
 </div>
 </div>
 <p>Finally we can normalize the data to get proper probablities for <code>p</code>.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="11">
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-13-output-1.png" width="579" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-12-output-1.png" width="496" height="189"></p>
 </div>
 </div>
 <p>This now gives us the number of times that 1000 draws of 10 coin tosses would give us 2 heads for each value of <code>p</code>. In other words we now have a probabiility distribution for the value of <code>p</code> given the data that we have (i.e.&nbsp;2 heads out of 10 coin tosses). This is the essence of bayesian inference, basically counting, where we make some assumption on the underlying data generating process and given this <em>a priori</em> assumption, we determine how likely each parameter is in generating the data that we see.</p>
@@ -387,102 +379,102 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 </ol>
 <p>I’m now going to introduce you to a slightly easier way for us to perform that same calculation. The issue with the above is that it is computationally expensive and hard to update with new data without rerunning the whole thing.</p>
 <p>So similar to above, we’re still going to assume that the data generating process is a binomial distribution with parameter <code>p</code>. Also just like before, let’s assume that we have no information on <code>p</code> prior to drawing our sample of 10 coin tosses. So our prior estimate is a uniform distribution between 0 and 1 (i.e.&nbsp;any value of <code>p</code> is equally likely).</p>
-<div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> stats.beta</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">2</span>))</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x,y, label<span class="op">=</span><span class="st">'Initial Estimate for p'</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>plt.ylim((<span class="dv">0</span>,<span class="dv">3</span>))</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Prior distribution for p"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> stats.beta</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>,<span class="dv">2</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x,y, label<span class="op">=</span><span class="st">'Initial Estimate for p'</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>plt.ylim((<span class="dv">0</span>,<span class="dv">3</span>))</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Prior distribution for p"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-14-output-1.png" width="335" height="209"></p>
+<p><img src="bayesian_files/figure-html/cell-13-output-1.png" width="335" height="209"></p>
 </div>
 </div>
 <p>Now let’s also define a probability density of Heads and Tails:</p>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-15-output-1.png" width="561" height="182"></p>
+<p><img src="bayesian_files/figure-html/cell-14-output-1.png" width="561" height="182"></p>
 </div>
 </div>
 <p>Now we can just multiply the initial probability density for our uniformed <code>p</code> by either HEADS or TAILS as it comes up in our sequence. As a reminder our sequence was:</p>
-<div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># heads is 1</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># heads is 1</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[0 1 0 0 0 1 0 0 0 0]</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>]</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">9</span>))</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>post <span class="op">=</span> dist.pdf(x, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x, post, label<span class="op">=</span><span class="st">'Uninformed prior'</span>)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, <span class="dv">0</span>, post, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">2</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>leg <span class="op">=</span> plt.legend()</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">2</span>)</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      <span class="co"># if k in [0, len(n_trials)-1] else None</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> data[N<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    post <span class="op">*=</span> H</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    post <span class="op">*=</span> T</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y = dist.pdf(x, 1 + heads, 1 + N - heads)</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  plt.plot(x, post, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, data[:N].<span class="bu">sum</span>()))</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  plt.fill_between(x, <span class="dv">0</span>, post, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  plt.axvline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>  leg <span class="op">=</span> plt.legend()</span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">9</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>post <span class="op">=</span> dist.pdf(x, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>plt.plot(x, post, label<span class="op">=</span><span class="st">'Uninformed prior'</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x, <span class="dv">0</span>, post, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">2</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>leg <span class="op">=</span> plt.legend()</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">2</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>      <span class="co"># if k in [0, len(n_trials)-1] else None</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> data[N<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    post <span class="op">*=</span> H</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    post <span class="op">*=</span> T</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># y = dist.pdf(x, 1 + heads, 1 + N - heads)</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  plt.plot(x, post, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, data[:N].<span class="bu">sum</span>()))</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  plt.fill_between(x, <span class="dv">0</span>, post, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>  plt.axvline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  leg <span class="op">=</span> plt.legend()</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-17-output-1.png" width="662" height="852"></p>
+<p><img src="bayesian_files/figure-html/cell-16-output-1.png" width="662" height="852"></p>
 </div>
 </div>
 <p>We now have our estimate for <code>p</code> based on 2 heads out of 10 coin tosses. The value of <code>p</code> with the highest likelihood is <code>0.2</code> but there is a non-zero probability for values near zero to all the way past <code>0.6</code>. But what would happen if we toss that same coin more and more and collected more data? We would be able to better refine our estimate for <code>p</code>.</p>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">400</span>]</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">9</span>))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>n_trials[<span class="op">-</span><span class="dv">1</span>], p<span class="op">=</span>config.p2)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="kw">in</span> [<span class="dv">0</span>, <span class="bu">len</span>(n_trials)<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="va">None</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data[:N].<span class="bu">sum</span>()</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span> <span class="op">+</span> heads, <span class="dv">1</span> <span class="op">+</span> N <span class="op">-</span> heads)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, y, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, heads))</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    leg <span class="op">=</span> plt.legend()</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>n_trials <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">400</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">9</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.RandomState(<span class="dv">13</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> rng.binomial(n<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>n_trials[<span class="op">-</span><span class="dv">1</span>], p<span class="op">=</span>config.p2)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, N <span class="kw">in</span> <span class="bu">enumerate</span>(n_trials):</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    sx <span class="op">=</span> plt.subplot(<span class="bu">len</span>(n_trials)<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, <span class="dv">2</span>, k<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"$p$, probability of heads"</span>) <span class="op">\</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="kw">in</span> [<span class="dv">0</span>, <span class="bu">len</span>(n_trials)<span class="op">-</span><span class="dv">1</span>] <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    plt.setp(sx.get_yticklabels(), visible<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    heads <span class="op">=</span> data[:N].<span class="bu">sum</span>()</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> dist.pdf(x, <span class="dv">1</span> <span class="op">+</span> heads, <span class="dv">1</span> <span class="op">+</span> N <span class="op">-</span> heads)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    plt.plot(x, y, label<span class="op">=</span><span class="st">"observe </span><span class="sc">%d</span><span class="st"> tosses,</span><span class="ch">\n</span><span class="st"> </span><span class="sc">%d</span><span class="st"> heads"</span> <span class="op">%</span> (N, heads))</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    plt.fill_between(x, <span class="dv">0</span>, y, color<span class="op">=</span><span class="st">"#348ABD"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    plt.vlines(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">4</span>, color<span class="op">=</span><span class="st">"k"</span>, linestyles<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    leg <span class="op">=</span> plt.legend()</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    leg.get_frame().set_alpha(<span class="fl">0.4</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    plt.autoscale(tight<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-18-output-1.png" width="662" height="748"></p>
+<p><img src="bayesian_files/figure-html/cell-17-output-1.png" width="662" height="748"></p>
 </div>
 </div>
 <p>As you can see as we continue to toss the coin past 10 coin tosses, we can further refine our estimate for <code>p</code> such that the value with the highest probability is now <code>0.6</code> whereas when we only had 10 coin tosses, <code>p=0.6</code> has a very low (but non-zero) probability. Note that I’ve using <code>p=0.6</code> throughout this example.</p>
@@ -497,21 +489,21 @@ probability of getting 47 heads or more:  75.92 %</code></pre>
 <section id="practical-example-1-linear-regression" class="level2">
 <h2 class="anchored" data-anchor-id="practical-example-1-linear-regression">Practical Example 1: Linear Regression</h2>
 <p>First off, let’s try linear regression using bayesian inference. Here, I’ve pregenerated a dummy dataset. Let’s import it and plot it.</p>
-<div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> linearregression <span class="im">as</span> lr</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(lr.x, lr.y)<span class="op">;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(lr.x), <span class="bu">len</span>(lr.y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> linearregression <span class="im">as</span> lr</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(lr.x, lr.y)<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(lr.x), <span class="bu">len</span>(lr.y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>200 200</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-19-output-2.png" width="577" height="411"></p>
+<p><img src="bayesian_files/figure-html/cell-18-output-2.png" width="577" height="411"></p>
 </div>
 </div>
 <p>We can now also turn to more sophisticated tools for linear regression. One that I like is PYMC but there are many other packages such as Numpyro, Tensorflow Probability, and Pyro. I’m going to use PYMC here.</p>
-<div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc <span class="im">as</span> pm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc <span class="im">as</span> pm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next we have to build a model for what we think our data generative process might be. A common model for linear regression is:</p>
 <p><span class="math display">\[
@@ -526,25 +518,25 @@ y_i = a + b x_i + \mathcal{N}(0, \sigma)
 y_i = \mathcal{N}(a + b x_i, \sigma)
 \]</span></p>
 <p>We do this because bayesian inference perfers to think in probability distributions. At the same time, we do not have any prior knowledge of <code>a</code> or <code>b</code> so we will use a uniform distribution as our priors with very large bounds. However one thing we do know from the data is that both <code>a</code> and <code>b</code> are above zero. Similarly for sigma, since we do not know much about it, we will use a half-normal distribution with a VERY wide sigma.</p>
-<div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model:</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define priors</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  a <span class="op">=</span> pm.Uniform(<span class="st">'a'</span>, lower<span class="op">=</span><span class="dv">0</span>, upper<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  b <span class="op">=</span> pm.Uniform(<span class="st">'b'</span>, lower<span class="op">=</span><span class="dv">0</span>, upper<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sigma = pm.Uniform('sigma', lower=0, upper=1000)</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  sigma <span class="op">=</span> pm.HalfNormal(<span class="st">'sigma'</span>, sigma<span class="op">=</span><span class="dv">100</span>)</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> a <span class="op">+</span> b <span class="op">*</span> lr.x</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define likelihood</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  likelihood <span class="op">=</span> pm.Normal(<span class="st">'y'</span>, mu<span class="op">=</span>y, sigma<span class="op">=</span>sigma, observed<span class="op">=</span>lr.y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model:</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define priors</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  a <span class="op">=</span> pm.Uniform(<span class="st">'a'</span>, lower<span class="op">=</span><span class="dv">0</span>, upper<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  b <span class="op">=</span> pm.Uniform(<span class="st">'b'</span>, lower<span class="op">=</span><span class="dv">0</span>, upper<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sigma = pm.Uniform('sigma', lower=0, upper=1000)</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  sigma <span class="op">=</span> pm.HalfNormal(<span class="st">'sigma'</span>, sigma<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> a <span class="op">+</span> b <span class="op">*</span> lr.x</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define likelihood</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  likelihood <span class="op">=</span> pm.Normal(<span class="st">'y'</span>, mu<span class="op">=</span>y, sigma<span class="op">=</span>sigma, observed<span class="op">=</span>lr.y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>So now we have distributions in distributions. The model now has to be fitted.</p>
-<div class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Interence Here!</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># draw 3000 posterior samples using NUTS sampling</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  idata <span class="op">=</span> pm.sample(<span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Inference Here!</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># draw 3000 posterior samples using NUTS sampling</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  idata <span class="op">=</span> pm.sample(<span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Auto-assigning NUTS sampler...</code></pre>
 </div>
@@ -579,7 +571,7 @@ y_i = \mathcal{N}(a + b x_i, \sigma)
 
     <div>
       <progress value="16000" class="" max="16000" style="width:300px; height:20px; vertical-align: middle;"></progress>
-      100.00% [16000/16000 00:02&lt;00:00 Sampling 4 chains, 1 divergences]
+      100.00% [16000/16000 00:02&lt;00:00 Sampling 4 chains, 0 divergences]
     </div>
     
 </div>
@@ -587,22 +579,31 @@ y_i = \mathcal{N}(a + b x_i, \sigma)
 <pre><code>Sampling 4 chains for 1_000 tune and 3_000 draw iterations (4_000 + 12_000 draws total) took 2 seconds.</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> arviz <span class="im">as</span> az</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>az.plot_trace(idata, figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">10</span>))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Having run the inference algorithm, lets plot the results.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> arviz <span class="im">as</span> az</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>az.plot_trace(idata, figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">10</span>))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="bayesian_files/figure-html/cell-23-output-1.png" width="623" height="800"></p>
+<p><img src="bayesian_files/figure-html/cell-22-output-1.png" width="619" height="800"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># idata.posterior["y_model"] = idata.posterior["a"] + idata.posterior["b"] * xr.DataArray(x)</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># _, ax = plt.subplots(figsize=(7, 7))</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># az.plot_lm(idata=idata, y="y", num_samples=100, axes=ax, y_model="y_model")</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_title("Posterior predictive regression lines")</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ax.set_xlabel("x");</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The charts on the left are now the posterior distributions for the parameters, <code>a</code>, <code>b</code> and <code>sigma</code> based on the observed data. As you can see, there is definitely values that are more likely based on the observed data, but with a range of uncertainty.</p>
+<p>Bayesian inference does not give us only one line of best fit but rather a whole posterior distribution of plausible parameters. When we combine the parameters back into an equation for the <span class="math inline">\(y = a + b x\)</span> we thus get many possible lines. We can manually generate these regression lines by sampling the posterior distribution directly. What you will also find is that the more data we provide the algorithm the narrower the range of possible lines becomes.</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>post <span class="op">=</span> az.extract(idata, num_samples<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>x_plot <span class="op">=</span> xr.DataArray(np.linspace(lr.x.<span class="bu">min</span>(), lr.x.<span class="bu">max</span>(), <span class="dv">100</span>), dims<span class="op">=</span><span class="st">"plot_id"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>y_plot <span class="op">=</span> post[<span class="st">'a'</span>] <span class="op">+</span> post[<span class="st">'b'</span>] <span class="op">*</span> x_plot</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.plot(x_plot, y_plot.transpose(), alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span><span class="st">'C1'</span>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>plt.plot(x_plot, lr.a <span class="op">+</span> lr.b<span class="op">*</span>x_plot, color<span class="op">=</span><span class="st">'C2'</span>, label<span class="op">=</span><span class="st">"true regression line"</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(lr.x, lr.y)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="bayesian_files/figure-html/cell-23-output-1.png" width="577" height="411"></p>
+</div>
 </div>
 </section>
 <section id="practical-example-2-pipeline-outage-data" class="level2">
@@ -621,6 +622,52 @@ y_i = \mathcal{N}(a + b x_i, \sigma)
 </div>
 <p></p>
 </div>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> outage <span class="im">as</span> ou</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> ou.outages_monthly(p<span class="op">=</span><span class="fl">0.25</span>, nl<span class="op">=</span><span class="dv">10</span>, pl<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            outage
+2020-06-01     2.0
+2020-07-01     6.0
+2020-08-01     3.0
+2020-09-01     0.0
+2020-10-01     3.0
+2020-11-01     0.0
+2020-12-01     0.0
+2021-01-01     0.0
+2021-02-01     0.0
+2021-03-01     2.0
+2021-04-01     0.0
+2021-05-01     0.0
+2021-06-01     0.0
+2021-07-01     0.0
+2021-08-01     0.0
+2021-09-01     2.0
+2021-10-01     0.0
+2021-11-01     1.0
+2021-12-01     0.0
+2022-01-01     0.0
+2022-02-01     0.0
+2022-03-01     0.0
+2022-04-01     1.0
+2022-05-01     0.0
+2022-06-01     0.0
+2022-07-01     0.0
+2022-08-01     0.0
+2022-09-01     0.0
+2022-10-01     0.0
+2022-11-01     0.0
+2022-12-01     0.0
+2023-01-01     0.0
+2023-02-01     2.0
+2023-03-01     0.0
+2023-04-01     0.0
+2023-05-01     0.0</code></pre>
 </div>
 </div>
 </section>

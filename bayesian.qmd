@@ -111,22 +111,22 @@ h1: p > 0.5
 
 h2: p < 0.5
 
-```{python}
-p = config.p3
-
-rng = np.random.RandomState(101) #15 for 40
-data = rng.binomial(n=1, size=ntoss, p=p)
-heads = data.sum()
-print("Number of heads in sample: ", heads)
-
-print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%")
-
-plt.hist(sample.mean(axis=0))
-print(
-    "2.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 2.5)) + " heads", 
-    "97.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 97.5)) + " heads"
-    )
-```
+<!-- ```{python} -->
+<!-- p = config.p3 -->
+<!---->
+<!-- rng = np.random.RandomState(101) #15 for 40 -->
+<!-- data = rng.binomial(n=1, size=ntoss, p=p) -->
+<!-- heads = data.sum() -->
+<!-- print("Number of heads in sample: ", heads) -->
+<!---->
+<!-- print(f"probability of getting {heads} heads or more: ", round(len(cnt[cnt >= heads])/nsamples*100,4) , "%") -->
+<!---->
+<!-- plt.hist(sample.mean(axis=0)) -->
+<!-- print( -->
+<!--     "2.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 2.5)) + " heads",  -->
+<!--     "97.5th Percentile = " + str(np.percentile(sample.sum(axis=0), 97.5)) + " heads" -->
+<!--     ) -->
+<!-- ``` -->
 
 In this case, without knowing the answer which alternative hypothesis would you use? Also it's bad practice just keep on testing various hypothesizes. This is because even with a result that shows a p-value of < 5%, this still means that you could randomly get a false-positive. The chance of getting a false-positive with a p-value of 5% on 20 tests is 100%! i.e. random chance alone will give you a false-positive if you just run enough tests...
 
@@ -229,7 +229,7 @@ for i in range(0,1000):
   if tmp.sum() == data.sum():
     cnt[0] += 1
 
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1,1, figsize=(6,2))
 
 ax.bar(x=ps, height=cnt, width=0.1);
 ```
@@ -245,7 +245,7 @@ for i in range(0,1000):
   if tmp.sum() == data.sum():
     cnt[1] += 1
 
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1,1, figsize=(6,2))
 
 ax.bar(x=ps, height=cnt, width=0.1);
 ```
@@ -265,7 +265,7 @@ for j in ps:
     if tmp.sum() == data.sum():
       cnt[idx] += 1
 
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1,1, figsize=(6,2))
 
 ax.bar(x=ps, height=cnt, width=0.1);
 ```
@@ -285,7 +285,7 @@ for j in ps:
     if tmp.sum() == data.sum():
       cnt[idx] += 1
 
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1,1, figsize=(6,2))
 
 ax.bar(x=ps, height=cnt/cnt.sum(), width=0.1);
 ```
@@ -480,29 +480,39 @@ So now we have distributions in distributions. The model now has to be fitted.
 ```{python}
 
 with model:
-  # Interence Here!
+  # Inference Here!
   # draw 3000 posterior samples using NUTS sampling
   idata = pm.sample(3000)
 
 ```
 
+Having run the inference algorithm, lets plot the results.
 
 ```{python}
 import arviz as az
 
 az.plot_trace(idata, figsize=(8,10));
-
 ```
+The charts on the left are now the posterior distributions for the parameters, `a`, `b` and `sigma` based on the observed data. As you can see, there is definitely values that are more likely based on the observed data, but with a range of uncertainty.
+
+Bayesian inference does not give us only one line of best fit but rather a whole posterior distribution of plausible parameters. When we combine the parameters back into an equation for the $y = a + b x$ we thus get many possible lines. We can manually generate these regression lines by sampling the posterior distribution directly. What you will also find is that the more data we provide the algorithm the narrower the range of possible lines becomes.
+
+
+
 
 ```{python}
 import xarray as xr
-# idata.posterior["y_model"] = idata.posterior["a"] + idata.posterior["b"] * xr.DataArray(x)
 
-# _, ax = plt.subplots(figsize=(7, 7))
-# az.plot_lm(idata=idata, y="y", num_samples=100, axes=ax, y_model="y_model")
-# ax.set_title("Posterior predictive regression lines")
-# ax.set_xlabel("x");
+post = az.extract(idata, num_samples=200)
+x_plot = xr.DataArray(np.linspace(lr.x.min(), lr.x.max(), 100), dims="plot_id")
+
+y_plot = post['a'] + post['b'] * x_plot
+
+plt.plot(x_plot, y_plot.transpose(), alpha=0.4, color='C1')
+plt.plot(x_plot, lr.a + lr.b*x_plot, color='C2', label="true regression line")
+plt.scatter(lr.x, lr.y);
 ```
+
 
 ## Practical Example 2: Pipeline Outage Data
 
@@ -516,3 +526,10 @@ graph LR
     A -- Pipeline B --> B
 ```
 
+```{python}
+import outage as ou
+
+data = ou.outages_monthly(p=0.25, nl=10, pl=0.3)
+
+print(data)
+```
